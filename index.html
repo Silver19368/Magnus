@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tirititito - Simulador Físico del Efecto Magnus</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Three.js and OrbitControls -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- HEADER -->
+        <header class="app-header">
+            <div class="logo-area">
+                <i data-lucide="wind" class="icon-wind-flow"></i>
+                <div>
+                    <h1>Tiriti<span>tito</span> <span class="logo-badge">3D</span></h1>
+                    <p>Simulador Físico 3D del Efecto Magnus en Fútbol</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <a href="#educational-section" class="btn btn-secondary">
+                    <i data-lucide="book-open"></i> ¿Qué es el Efecto Magnus?
+                </a>
+            </div>
+        </header>
+
+        <!-- MAIN LAYOUT -->
+        <main class="app-main">
+            <!-- Botón de alternancia de barra lateral en pantalla completa -->
+            <button id="btn-toggle-sidebar" class="btn-toggle-sidebar" title="Ocultar / Mostrar parámetros">
+                <i data-lucide="chevron-left"></i>
+            </button>
+
+            <!-- LEFT PANEL: CONTROLS -->
+            <aside class="sidebar-panel" id="sidebar-panel">
+                <!-- CONTROLS -->
+                <div class="panel-section">
+                    <h2><i data-lucide="sliders"></i> Parámetros de Tiro</h2>
+
+                    <!-- VELOCIDAD -->
+                    <div class="control-group">
+                        <div class="control-label">
+                            <span>Velocidad Inicial</span>
+                            <span class="value-display" id="val-speed">35 m/s</span>
+                        </div>
+                        <input type="range" id="input-speed" min="10" max="45" step="0.5" value="38">
+                        <div class="input-subtitle">Equivalente a <span id="val-speed-kmh">136.8</span> km/h</div>
+                    </div>
+
+                    <!-- ÁNGULO VERTICAL -->
+                    <div class="control-group">
+                        <div class="control-label">
+                            <span>Elevación Vertical</span>
+                            <span class="value-display" id="val-elevation">12°</span>
+                        </div>
+                        <input type="range" id="input-elevation" min="0" max="45" step="0.5" value="12">
+                    </div>
+
+                    <!-- ÁNGULO HORIZONTAL -->
+                    <div class="control-group">
+                        <div class="control-label">
+                            <span>Desviación Horizontal</span>
+                            <span class="value-display" id="val-azimuth">10°</span>
+                        </div>
+                        <input type="range" id="input-azimuth" min="-30" max="30" step="0.5" value="10">
+                        <div class="input-subtitle">Ángulo lateral hacia la derecha(+) o izquierda(-)</div>
+                    </div>
+
+                    <!-- ROTACIÓN (RPM) -->
+                    <div class="control-group">
+                        <div class="control-label">
+                            <span>Velocidad de Rotación (Spin)</span>
+                            <span class="value-display" id="val-spin">800 RPM</span>
+                        </div>
+                        <input type="range" id="input-spin" min="-1200" max="1200" step="25" value="800">
+                    </div>
+
+                    <!-- EJE DE ROTACIÓN -->
+                    <div class="control-group">
+                        <div class="control-label">
+                            <span>Inclinación del Eje de Rotación</span>
+                            <span class="value-display" id="val-spin-angle">90°</span>
+                        </div>
+                        <input type="range" id="input-spin-angle" min="0" max="360" step="5" value="90">
+                        <div class="input-subtitle">
+                            90°: Curva lateral pura (Efecto Magnus horizontal)<br>
+                            0° / 180°: Topspin (descendente) / Backspin (elevación)
+                        </div>
+                    </div>
+
+                    <!-- DISTANCIA A PORTERÍA -->
+                    <div class="control-group">
+                        <div class="control-label">
+                            <span>Distancia de Tiro</span>
+                            <span class="value-display" id="val-distance">35.0 m</span>
+                        </div>
+                        <input type="range" id="input-distance" min="15" max="45" step="0.5" value="35">
+                        <div class="input-subtitle">Distancia longitudinal hasta la línea de meta</div>
+                    </div>
+
+                    <!-- POSICIÓN LATERAL -->
+                    <div class="control-group">
+                        <div class="control-label">
+                            <span>Posición Lateral</span>
+                            <span class="value-display" id="val-lateral">0.0 m</span>
+                        </div>
+                        <input type="range" id="input-lateral" min="-15" max="15" step="0.5" value="0">
+                        <div class="input-subtitle">Desplazamiento horizontal: Izquierda(-) / Derecha(+)</div>
+                    </div>
+                </div>
+
+
+                <!-- VIENTO -->
+                <div class="panel-section">
+                    <h2><i data-lucide="wind"></i> Condiciones Ambientales</h2>
+                    <div class="viento-container">
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span>Velocidad del Viento</span>
+                                <span class="value-display" id="val-wind-speed">0 m/s</span>
+                            </div>
+                            <input type="range" id="input-wind-speed" min="0" max="20" step="0.5" value="0">
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span>Dirección del Viento</span>
+                                <span class="value-display" id="val-wind-angle">0°</span>
+                            </div>
+                            <input type="range" id="input-wind-angle" min="0" max="360" step="5" value="0">
+                            <div class="input-subtitle">Viento en contra (180°), viento a favor (0°), viento cruzado
+                                (90° / 270°)</div>
+                        </div>
+                        <div class="control-group">
+                            <div class="control-label">
+                                <span>Altitud de Juego</span>
+                                <span class="value-display" id="val-altitude">0 m</span>
+                            </div>
+                            <input type="range" id="input-altitude" min="0" max="2500" step="10" value="0">
+                            <div class="input-subtitle">
+                                Densidad de aire: <span id="val-air-density" class="highlight-val">1.20 kg/m³</span><br>
+                                <span id="altitude-landmark">Nivel del mar (0 m)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- CENTER & RIGHT: SIMULATION AREA & LIVE DASHBOARD -->
+            <div class="simulation-dashboard-area">
+
+                <!-- 3D VIEWPORTS & SCREEN OVERLAYS -->
+                <div class="simulation-card">
+                    <div class="simulation-header">
+                        <div class="cam-controls">
+                            <button class="btn btn-cam active" id="cam-kick" title="Vista detrás del ejecutor"><i
+                                    data-lucide="eye"></i> Jugador</button>
+                            <button class="btn btn-cam" id="cam-gk" title="Vista desde la portería"><i
+                                    data-lucide="shield"></i> Portería</button>
+                            <button class="btn btn-cam" id="cam-top" title="Vista aérea cenital"><i
+                                    data-lucide="arrow-down"></i> Cenital</button>
+                            <button class="btn btn-cam" id="cam-follow" title="Seguir al balón de cerca"><i
+                                    data-lucide="video"></i> Seguimiento</button>
+                            <button class="btn btn-cam" id="cam-tv"
+                                title="Cámara de Transmisión de TV (Zoom y Paneo)"><i data-lucide="tv"></i> Transmisión
+                                TV</button>
+                            <button class="btn btn-cam" id="cam-orbit" title="Movimiento orbital libre por arrastre"><i
+                                    data-lucide="globe"></i> Libre</button>
+                            <button class="btn btn-cam" id="presets-tab-trigger" title="Ver Tiros Legendarios"><i
+                                    data-lucide="sparkles"></i> Históricos</button>
+                        </div>
+                        <div class="visuals-toggle">
+                            <label class="toggle-container">
+                                <input type="checkbox" id="toggle-vectors" checked>
+                                <span class="toggle-slider"></span>
+                                <span>Fuerzas (Vectores)</span>
+                            </label>
+                            <label class="toggle-container">
+                                <input type="checkbox" id="toggle-ideal" checked>
+                                <span class="toggle-slider"></span>
+                                <span>Tiro sin Efecto</span>
+                            </label>
+                            <label class="toggle-container">
+                                <input type="checkbox" id="toggle-targets">
+                                <span class="toggle-slider"></span>
+                                <span>Dianas de Precisión</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- THE 3D CANVAS CONTAINER -->
+                    <div class="canvas-container" id="canvas-container">
+                        <!-- Canvas created dynamically by Three.js -->
+
+                        <!-- Telemetry overlays -->
+                        <div class="telemetry-overlay overlay-top-left">
+                            <div class="stat-box">
+                                <span class="stat-label">Distancia</span>
+                                <span class="stat-val" id="telemetry-distance">0.0 m</span>
+                            </div>
+                            <div class="stat-box">
+                                <span class="stat-label">Altura</span>
+                                <span class="stat-val" id="telemetry-height">0.0 m</span>
+                            </div>
+                            <div class="stat-box">
+                                <span class="stat-label">Velocidad</span>
+                                <span class="stat-val" id="telemetry-speed">0.0 km/h</span>
+                            </div>
+                        </div>
+
+                        <div class="telemetry-overlay overlay-top-right">
+                            <div class="vector-legend">
+                                <div class="legend-item"><span class="color-dot magnus-color"></span> Fuerza Magnus
+                                    (<span id="force-magnus-val">0.0</span> N)</div>
+                                <div class="legend-item"><span class="color-dot drag-color"></span> Fuerza de Arrastre
+                                    (<span id="force-drag-val">0.0</span> N)</div>
+                                <div class="legend-item"><span class="color-dot gravity-color"></span> Fuerza Gravedad
+                                    (<span id="force-gravity-val">4.2</span> N)</div>
+                            </div>
+                        </div>
+
+                        <div class="telemetry-overlay overlay-bottom-center">
+                            <div class="simulation-player-bar">
+                                <button class="btn-play" id="btn-shoot" title="Lanzar Balón"><i
+                                        data-lucide="play-circle"></i> CHUTAR</button>
+                                <div class="divider"></div>
+                                <button class="btn-action" id="btn-play-pause" disabled title="Pausar / Continuar"><i
+                                        data-lucide="pause"></i></button>
+                                <button class="btn-action" id="btn-reset" title="Reiniciar tiro"><i
+                                        data-lucide="rotate-ccw"></i></button>
+                                <div class="speed-selector">
+                                    <button class="btn-speed active" data-speed="1.0">1x</button>
+                                    <button class="btn-speed" data-speed="0.5">0.5x</button>
+                                    <button class="btn-speed" data-speed="0.25">0.25x</button>
+                                </div>
+                                <div class="divider"></div>
+                                <button class="btn-action" id="btn-fullscreen" title="Pantalla Completa"><i
+                                        data-lucide="maximize"></i></button>
+                            </div>
+                        </div>
+
+                        <div class="ball-spin-indicator" id="ball-spin-canvas-container"
+                            title="Representación visual de la orientación del giro">
+                            <canvas id="spin-axis-canvas" width="80" height="80"></canvas>
+                            <span class="indicator-label">Eje de Rotación</span>
+                        </div>
+                    </div>
+
+                    <!-- Cajón deslizante de Tiros Históricos -->
+                    <div id="historical-presets-drawer" class="presets-drawer">
+                        <div class="presets-drawer-content">
+                            <h3><i data-lucide="award"></i> Tiros Libres Legendarios</h3>
+                            <p class="presets-intro">Haz clic en un tiro histórico para cargar sus parámetros físicos al
+                                simulador:</p>
+                            <div class="presets-list">
+                                <div class="preset-card" id="preset-rc97">
+                                    <div class="preset-header">
+                                        <span class="preset-player">Roberto Carlos</span>
+                                        <span class="preset-year">1997</span>
+                                    </div>
+                                    <div class="preset-match">Brasil vs Francia</div>
+                                    <p class="preset-desc">El desvío lateral y comba exterior que desafió las leyes de
+                                        la física.</p>
+                                </div>
+                                <div class="preset-card" id="preset-cr08">
+                                    <div class="preset-header">
+                                        <span class="preset-player">Cristiano Ronaldo</span>
+                                        <span class="preset-year">2008</span>
+                                    </div>
+                                    <div class="preset-match">Man Utd vs Portsmouth</div>
+                                    <p class="preset-desc">El knuckleball clásico: potencia, velocidad y desprendimiento
+                                        asimétrico de aire sin giro.</p>
+                                </div>
+                                <div class="preset-card" id="preset-messi19">
+                                    <div class="preset-header">
+                                        <span class="preset-player">Lionel Messi</span>
+                                        <span class="preset-year">2019</span>
+                                    </div>
+                                    <div class="preset-match">Barcelona vs Liverpool</div>
+                                    <p class="preset-desc">Parábola perfecta que superó la barrera y se metió en la
+                                        escuadra superior derecha.</p>
+                                </div>
+                                <div class="preset-card" id="preset-r1002">
+                                    <div class="preset-header">
+                                        <span class="preset-player">Ronaldinho</span>
+                                        <span class="preset-year">2002</span>
+                                    </div>
+                                    <div class="preset-match">Brasil vs Inglaterra</div>
+                                    <p class="preset-desc">Efecto "hoja seca": vaselina sobre el arquero David Seaman en
+                                        el Mundial.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LIVE GRAPH CHARTS -->
+                <div class="dashboard-charts-card">
+                    <div class="card-header">
+                        <h2><i data-lucide="bar-chart-2"></i> Gráficos de Trayectoria e Instrumentación</h2>
+                    </div>
+                    <div class="charts-grid">
+                        <div class="chart-container">
+                            <canvas id="chart-side-view"></canvas>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="chart-top-view"></canvas>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="chart-forces"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- EDUCATIONAL PHYSICS SECTION -->
+        <section class="educational-section" id="educational-section">
+            <div class="edu-card">
+                <h2>¿Qué es el Efecto Magnus y cómo funciona?</h2>
+                <div class="edu-grid">
+                    <div class="edu-text">
+                        <p>
+                            El <strong>Efecto Magnus</strong> es un fenómeno físico que se observa cuando un objeto en
+                            rotación (como un balón de fútbol) se mueve a través de un fluido (el aire). Al girar, el
+                            balón arrastra consigo una capa delgada de aire que lo rodea inmediatamente (la <strong>capa
+                                límite</strong>).
+                        </p>
+                        <p>
+                            Debido a esta fricción del aire con la superficie rugosa del balón:
+                        </p>
+                        <ul>
+                            <li>
+                                En un lado del balón, el aire se mueve en la <strong>misma dirección</strong> que la
+                                superficie giratoria, lo que aumenta la velocidad local del aire respecto al balón.
+                                Según el <strong>Principio de Bernoulli</strong>, a mayor velocidad de fluido, menor
+                                presión.
+                            </li>
+                            <li>
+                                En el lado opuesto, el aire se mueve en la <strong>dirección contraria</strong> al giro
+                                de la superficie, frenando la corriente de aire y creando una zona de alta presión.
+                            </li>
+                        </ul>
+                        <p>
+                            Esta diferencia neta de presión genera una fuerza (la <strong>Fuerza de Magnus</strong>) que
+                            empuja al balón desde la zona de alta presión hacia la de baja presión, curvando su
+                            trayectoria espectacularmente.
+                        </p>
+                    </div>
+                    <div class="edu-math">
+                        <div class="formula-box">
+                            <span class="formula-title">Ecuación de la Fuerza Magnus</span>
+                            <div class="formula-render">
+                                \(\vec{F}_M = C_L \cdot \frac{1}{2}\rho \cdot A \cdot v^2 \cdot \hat{e}_M\)
+                            </div>
+                            <ul class="formula-vars">
+                                <li><strong>\(\vec{F}_M\):</strong> Fuerza de Magnus (en Newtons)</li>
+                                <li><strong>\(C_L\):</strong> Coeficiente de sustentación (depende del "spin parameter"
+                                    \(S = \frac{\omega r}{v}\))</li>
+                                <li><strong>\(\rho\):</strong> Densidad del aire (\(1.2 \text{ kg/m}^3\))</li>
+                                <li><strong>\(A\):</strong> Área transversal del balón (\(\pi r^2 \approx 0.038 \text{
+                                    m}^2\))</li>
+                                <li><strong>\(v\):</strong> Velocidad del balón respecto al aire</li>
+                                <li><strong>\(\hat{e}_M\):</strong> Vector unitario en la dirección de \(\vec{\omega}
+                                    \times \vec{v}\)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="edu-history">
+                    <h3>El Tiro de Roberto Carlos contra Francia (1997)</h3>
+                    <p>
+                        En el Torneo de Francia de 1997, el lateral brasileño Roberto Carlos anotó un gol de tiro libre
+                        desde 35 metros que parecía irse muy a la derecha de la portería francesa. La pelota esquivó la
+                        barrera por el exterior por más de un metro. Sin embargo, debido a su enorme velocidad (~38 m/s)
+                        y a su altísima rotación (~10 revoluciones por segundo o 600-800 RPM), la fuerza de Magnus
+                        lateral superó gradualmente a la fuerza de arrastre a medida que el balón desaceleraba. Esto
+                        causó que la comba se volviera mucho más pronunciada hacia el final, doblando drásticamente
+                        hacia la izquierda y metiéndose en el ángulo inferior derecho ante la mirada atónita del arquero
+                        Fabien Barthez.
+                    </p>
+                    <blockquote>
+                        <em>"El balón iba tan rápido que el efecto Magnus actuó en su máxima potencia al final de la
+                            trayectoria, cuando la resistencia del aire frenó el balón permitiendo que la rotación
+                            dominara el movimiento."</em>
+                    </blockquote>
+                </div>
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="app-footer">
+            <p>Diseñado para modelar dinámicas físicas reales de balones de fútbol. Desarrollado con Three.js, Chart.js
+                y mucho amor por la física deportiva.</p>
+        </footer>
+    </div>
+
+    <!-- MathJax for nice math formulas rendering -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <!-- App Scripts -->
+    <script src="physics.js"></script>
+    <script src="simulation.js"></script>
+    <script src="ui.js"></script>
+</body>
+
+</html>
