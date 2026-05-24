@@ -7,6 +7,19 @@ El simulador permite experimentar de forma visual cómo influyen parámetros com
 
 ---
 
+## 📸 Capturas de Pantalla
+
+### Vista General del Panel e Interfaz (Cámara Libre)
+![Vista de Control](assets/screenshot_dashboard.png)
+
+### Efecto de Giro y Trayectoria (Cámara de Seguimiento)
+![Cámara de Seguimiento](assets/screenshot_follow.png)
+
+### Vectores de Fuerza e Iluminación (Cámara de Ángulo Elevado)
+![Vista de Fuerzas](assets/screenshot_fullscreen.png)
+
+---
+
 ## 🚀 Características Principales
 
 *   **Renderizado 3D Interactivo**: Visualización construida sobre **Three.js** con simulación de césped, portería reglamentaria y barrera defensiva interactiva.
