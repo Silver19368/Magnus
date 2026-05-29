@@ -423,15 +423,18 @@ class MagnusSimulation {
         this.scene.add(this.goal);
     }
 
-    createBarrier() {
-        // Grupo para la barrera defensiva
-        this.barrier = new THREE.Group();
+    createBarrier(numPlayers = 4) {
+        if (!this.barrier) {
+            this.barrier = new THREE.Group();
+            this.scene.add(this.barrier);
+        } else {
+            // Limpiar barrera existente
+            while(this.barrier.children.length > 0){ 
+                this.barrier.remove(this.barrier.children[0]); 
+            }
+        }
         
         // Posición de la barrera: por reglamento a 9.15m del balón.
-        // El tiro de Roberto Carlos esquivaba la barrera por el exterior derecho.
-        // Colocamos 4 defensores alineados lateralmente en Z = 9.15m.
-        // La alineación cubre aproximadamente de X = 0.5 a X = 2.5.
-        const numPlayers = 4;
         const playerWidth = 0.5;
         const spacing = 0.55;
         const barrierZ = 9.15;
@@ -514,8 +517,6 @@ class MagnusSimulation {
 
             this.barrier.add(player);
         }
-
-        this.scene.add(this.barrier);
     }
 
 
@@ -795,12 +796,21 @@ class MagnusSimulation {
             this.physicsSolver.rho = shootParams.airDensity;
         }
 
+        // Guardamos los parámetros actuales para que otras funciones (como el salto) puedan consultarlos
+        this.currentShootParams = shootParams;
+
         // Posicionar dinámicamente la barrera en la escena 3D según el origen del tiro
         const startX = shootParams.initialPos ? shootParams.initialPos.x : 0;
         const startZ = shootParams.initialPos ? shootParams.initialPos.z : 0;
         const barrierZ = startZ + 9.15;
         const barrierXOffset = shootParams.barrierXOffset !== undefined ? shootParams.barrierXOffset : 0.6;
         const spacing = 0.55;
+        const numPlayers = shootParams.barrierPlayers !== undefined ? shootParams.barrierPlayers : 4;
+
+        // Asegurarnos de que el número de jugadores sea el correcto
+        if (!this.barrier || this.barrier.children.length !== numPlayers) {
+            this.createBarrier(numPlayers);
+        }
 
         if (this.barrier) {
             this.barrier.children.forEach((player, i) => {
@@ -1150,16 +1160,20 @@ class MagnusSimulation {
     }
 
     animateBarrierJump(ballZ) {
+        if (!this.barrier) return;
+
+        const jumpEnabled = this.currentShootParams && this.currentShootParams.barrierJump !== false;
+
         // Los jugadores saltan si el balón se aproxima a la barrera (Z entre 6m y 10m)
         this.barrier.children.forEach(player => {
             const distanceZ = Math.abs(ballZ - player.userData.pz);
-            if (ballZ < player.userData.pz && distanceZ < 6.0) {
+            if (jumpEnabled && ballZ < player.userData.pz && distanceZ < 6.0) {
                 // Curva de salto senoidal basada en la proximidad
                 const jumpProgress = (6.0 - distanceZ) / 6.0; // 0 a 1
                 const jumpHeight = 0.35 * Math.sin(jumpProgress * Math.PI); // Salto máx de 35cm
                 player.position.y = player.userData.baseY + jumpHeight;
-            } else if (ballZ >= player.userData.pz && player.position.y > player.userData.baseY) {
-                // Regresar suavemente al suelo después de que pasa el balón
+            } else if (player.position.y > player.userData.baseY) {
+                // Regresar suavemente al suelo después de que pasa el balón o si el salto se desactiva
                 player.position.y -= 0.05;
                 if (player.position.y < player.userData.baseY) player.position.y = player.userData.baseY;
             }

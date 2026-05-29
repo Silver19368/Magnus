@@ -69,7 +69,9 @@ document.addEventListener('DOMContentLoaded', () => {
         ideal: document.getElementById('toggle-ideal'),
         targets: document.getElementById('toggle-targets'),
         distance: document.getElementById('input-distance'),
-        lateral: document.getElementById('input-lateral')
+        lateral: document.getElementById('input-lateral'),
+        barrierPlayers: document.getElementById('input-barrier-players'),
+        barrierJump: document.getElementById('input-barrier-jump')
     };
 
     const displays = {
@@ -85,7 +87,8 @@ document.addEventListener('DOMContentLoaded', () => {
         airDensity: document.getElementById('val-air-density'),
         altitudeLandmark: document.getElementById('altitude-landmark'),
         distance: document.getElementById('val-distance'),
-        lateral: document.getElementById('val-lateral')
+        lateral: document.getElementById('val-lateral'),
+        barrierPlayers: document.getElementById('val-barrier-players')
     };
 
     const buttons = {
@@ -321,7 +324,9 @@ document.addEventListener('DOMContentLoaded', () => {
             },
             airDensity: getAirDensityAtAltitude(parseFloat(inputs.altitude.value)),
             initialPos: initialPos,
-            barrierXOffset: barrierXOffset
+            barrierXOffset: barrierXOffset,
+            barrierPlayers: parseInt(inputs.barrierPlayers ? inputs.barrierPlayers.value : 4),
+            barrierJump: inputs.barrierJump ? inputs.barrierJump.checked : true
         };
     }
 
@@ -379,18 +384,22 @@ document.addEventListener('DOMContentLoaded', () => {
                     landmarkText = "Altitud elevada (ej. Bogotá: ~2600m)";
                 }
                 displays.altitudeLandmark.textContent = landmarkText;
-            }}
+            }},
+            { slider: inputs.barrierPlayers, display: displays.barrierPlayers, suffix: '' }
         ];
 
         sliderMappings.forEach(mapping => {
+            if(!mapping.slider) return;
             mapping.slider.addEventListener('input', (e) => {
                 const val = e.target.value;
-                mapping.display.textContent = val + mapping.suffix;
-                
-                // Activar animación de "pop"
-                mapping.display.classList.remove('popping');
-                void mapping.display.offsetWidth; // forzar reflow
-                mapping.display.classList.add('popping');
+                if(mapping.display) {
+                    mapping.display.textContent = val + mapping.suffix;
+                    
+                    // Activar animación de "pop"
+                    mapping.display.classList.remove('popping');
+                    void mapping.display.offsetWidth; // forzar reflow
+                    mapping.display.classList.add('popping');
+                }
                 
                 if (mapping.callback) mapping.callback(val);
                 
@@ -398,6 +407,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 updateTrajectory();
             });
         });
+
+        if (inputs.barrierJump) {
+            inputs.barrierJump.addEventListener('change', () => {
+                updateTrajectory();
+            });
+        }
     }
 
     /**
