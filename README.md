@@ -57,10 +57,9 @@ $$\vec{F}_{total} = \vec{F}_G + \vec{F}_D + \vec{F}_M$$
 
 ## 🛠️ Tecnologías Utilizadas
 
-*   **HTML5** y **Vanilla CSS3** (Diseño premium responsivo con soporte para Pantalla Completa y HUD ocultable mediante la tecla `H`).
+*   **HTML5** y **Vanilla CSS3**.
 *   **Three.js** (Motor de gráficos 3D y renderizado WebGL).
 *   **Chart.js** (Renderizado dinámico de gráficas 2D).
-*   **Lucide Icons** (Iconografía limpia y moderna).
 
 ---
 
