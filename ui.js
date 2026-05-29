@@ -176,50 +176,50 @@ document.addEventListener('DOMContentLoaded', () => {
         'preset-rc97': {
             speed: 36.0,
             elevation: 11.0,
-            azimuth: 12.5,
+            azimuth: -12.5,
             spin: 700,
-            spinAngle: 90,
+            spinAngle: 270,
             windSpeed: 0,
             windAngle: 0,
             altitude: 0,
             initialPos: { x: 0, y: 0.11, z: 0 },
-            barrierXOffset: 0.8
+            barrierXOffset: -0.8
         },
         'preset-cr08': {
             speed: 31.5,
             elevation: 15.5,
-            azimuth: 0.0,
+            azimuth: -3.0,
             spin: 100,
             spinAngle: 30,
             windSpeed: 0,
             windAngle: 0,
             altitude: 0,
-            initialPos: { x: 1.0, y: 0.11, z: 7.0 }, // 28m de la meta
-            barrierXOffset: -0.5
+            initialPos: { x: -1.0, y: 0.11, z: 7.0 }, // 28m de la meta
+            barrierXOffset: 1.0
         },
         'preset-messi19': {
-            speed: 29.0,
+            speed: 28.0,
             elevation: 17.0,
-            azimuth: 7.0,
-            spin: 900,
-            spinAngle: 85,
+            azimuth: 7.5,
+            spin: -350,
+            spinAngle: 275,
             windSpeed: 0,
             windAngle: 0,
             altitude: 0,
-            initialPos: { x: -2.0, y: 0.11, z: 6.0 }, // 29m de la meta
-            barrierXOffset: 0.5
+            initialPos: { x: 2.0, y: 0.11, z: 6.0 }, // 29m de la meta
+            barrierXOffset: -0.5
         },
         'preset-r1002': {
             speed: 30.0,
             elevation: 22.0,
-            azimuth: -13.0,
+            azimuth: 13.0,
             spin: 550,
-            spinAngle: 85,
+            spinAngle: 275,
             windSpeed: 0,
             windAngle: 0,
             altitude: 0,
-            initialPos: { x: 13.5, y: 0.11, z: -3.0 }, // 38m de la meta en banda derecha
-            barrierXOffset: -1.5
+            initialPos: { x: -13.5, y: 0.11, z: -3.0 }, // 38m de la meta en banda derecha
+            barrierXOffset: 1.5
         }
     };
 
@@ -260,8 +260,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 inputs.lateral.dispatchEvent(event);
                 if (inputs.barrierPos) inputs.barrierPos.dispatchEvent(event);
 
-                // Activar automáticamente la cámara de TV Broadcast
-                simulation.setCameraMode('tv');
+                // Activar automáticamente la cámara del jugador (cam-kick)
+                simulation.setCameraMode('kick');
 
                 // Calcular trayectoria inmediatamente
                 updateTrajectory();

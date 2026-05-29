@@ -928,21 +928,27 @@ class MagnusSimulation {
             (point.pos.y - startPt.pos.y)**2 + 
             (point.pos.z - startPt.pos.z)**2
         ) : 0;
+        const distToGoal = Math.sqrt(point.pos.x**2 + point.pos.y**2 + (35 - point.pos.z)**2);
+
         const elDist = document.getElementById('telemetry-distance');
+        const elDistGoal = document.getElementById('telemetry-dist-goal');
         const elHeight = document.getElementById('telemetry-height');
         const elSpeed = document.getElementById('telemetry-speed');
         
         elDist.textContent = `${dist.toFixed(1)} m`;
+        if (elDistGoal) elDistGoal.textContent = `${distToGoal.toFixed(1)} m`;
         elHeight.textContent = `${point.pos.y.toFixed(1)} m`;
         elSpeed.textContent = `${point.speedKmh.toFixed(1)} km/h`;
         
         // Efecto visual "Live Glow" durante el vuelo
         if (this.isPlaying) {
             elDist.classList.add('live-glow');
+            if (elDistGoal) elDistGoal.classList.add('live-glow');
             elHeight.classList.add('live-glow');
             elSpeed.classList.add('live-glow');
         } else {
             elDist.classList.remove('live-glow');
+            if (elDistGoal) elDistGoal.classList.remove('live-glow');
             elHeight.classList.remove('live-glow');
             elSpeed.classList.remove('live-glow');
         }
