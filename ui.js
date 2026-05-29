@@ -71,7 +71,8 @@ document.addEventListener('DOMContentLoaded', () => {
         distance: document.getElementById('input-distance'),
         lateral: document.getElementById('input-lateral'),
         barrierPlayers: document.getElementById('input-barrier-players'),
-        barrierJump: document.getElementById('input-barrier-jump')
+        barrierJump: document.getElementById('input-barrier-jump'),
+        barrierPos: document.getElementById('input-barrier-pos')
     };
 
     const displays = {
@@ -88,7 +89,8 @@ document.addEventListener('DOMContentLoaded', () => {
         altitudeLandmark: document.getElementById('altitude-landmark'),
         distance: document.getElementById('val-distance'),
         lateral: document.getElementById('val-lateral'),
-        barrierPlayers: document.getElementById('val-barrier-players')
+        barrierPlayers: document.getElementById('val-barrier-players'),
+        barrierPos: document.getElementById('val-barrier-pos')
     };
 
     const buttons = {
@@ -240,6 +242,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 inputs.altitude.value = preset.altitude;
                 inputs.distance.value = 35.0 - (preset.initialPos ? preset.initialPos.z : 0);
                 inputs.lateral.value = preset.initialPos ? preset.initialPos.x : 0;
+                if (inputs.barrierPos) {
+                    inputs.barrierPos.value = preset.barrierXOffset !== undefined ? preset.barrierXOffset : 0.6;
+                }
 
                 // Disparar eventos de entrada (input) para actualizar la visualización de la UI
                 const event = new Event('input', { bubbles: true });
@@ -253,6 +258,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 inputs.altitude.dispatchEvent(event);
                 inputs.distance.dispatchEvent(event);
                 inputs.lateral.dispatchEvent(event);
+                if (inputs.barrierPos) inputs.barrierPos.dispatchEvent(event);
 
                 // Activar automáticamente la cámara de TV Broadcast
                 simulation.setCameraMode('tv');
@@ -297,20 +303,7 @@ document.addEventListener('DOMContentLoaded', () => {
             z: 35.0 - distanceVal 
         };
         
-        let barrierXOffset = 0.6;
-        
-        const activePresetCard = document.querySelector('.preset-card.active');
-        if (activePresetCard && historicalPresets[activePresetCard.id]) {
-            const pr = historicalPresets[activePresetCard.id];
-            if (pr.barrierXOffset !== undefined) barrierXOffset = pr.barrierXOffset;
-        } else {
-            // Posicionamiento inteligente del barrierXOffset para tapar el arco desde ese ángulo
-            if (lateralVal > 2) {
-                barrierXOffset = -0.8; // cubrir primer poste (derecho)
-            } else if (lateralVal < -2) {
-                barrierXOffset = 0.8; // cubrir primer poste (izquierdo)
-            }
-        }
+        let barrierXOffset = inputs.barrierPos ? parseFloat(inputs.barrierPos.value) : 0.6;
 
         return {
             speed: parseFloat(inputs.speed.value),
@@ -385,7 +378,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 displays.altitudeLandmark.textContent = landmarkText;
             }},
-            { slider: inputs.barrierPlayers, display: displays.barrierPlayers, suffix: '' }
+            { slider: inputs.barrierPlayers, display: displays.barrierPlayers, suffix: '' },
+            { slider: inputs.barrierPos, display: displays.barrierPos, suffix: ' m' }
         ];
 
         sliderMappings.forEach(mapping => {
