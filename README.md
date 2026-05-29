@@ -73,3 +73,29 @@ Dado que es una aplicación basada íntegramente en el cliente, no necesita ning
     git clone https://github.com/Silver19368/Magnus.git
     ```
 2.  Abre el archivo `index.html` en cualquier navegador web moderno.
+
+---
+
+## 👥 Autores y Créditos
+
+Este proyecto es parte de la iniciativa **Ciencia y fútbol** de la **Facultad de Ciencias, UNAM**.
+
+**Coordinador:**
+*   **José Ramón Hernández Balanzar** (Coordinador de SINERGIA MediaLab FC-UNAM)
+
+**Participantes:**
+*   Esteban A. Santillán López
+*   Diego Alberto Carrasco Morán
+*   Mónica Ramírez Vázquez
+*   David Álvarez Caballero
+*   María Sarai García Rojas
+*   Beatriz Jara Madera
+*   Uri Neftalí Nader Vázquez
+*   Frida Sofía Quintanilla Ducoing
+*   Miguel Eduardo Rios Rocha
+*   Angélica Jasabet Santiago Islas
+*   Claudia Iriel Serrano Sánchez
+*   Karen Soriano Hernández
+*   Israel Alejandro Santiago Corona
+
+![Ciencia y Fútbol - SINERGIA MediaLab](assets/cartel.jpg)

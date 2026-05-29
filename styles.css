@@ -885,6 +885,108 @@ input[type="range"]::-webkit-slider-thumb:hover {
 }
 
 /* ==========================================================================
+   CREDITS SECTION
+   ========================================================================== */
+.credits-section {
+    margin-top: 24px;
+    margin-bottom: 40px;
+}
+
+.credits-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-top: 20px;
+}
+
+.credits-text {
+    color: var(--text-muted);
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+.credits-text p {
+    margin-bottom: 16px;
+}
+
+.credits-text strong {
+    color: var(--text-main);
+    font-weight: 600;
+}
+
+.coordinator-title, .participants-title {
+    font-size: 16px;
+    font-weight: 700;
+    margin-top: 20px;
+    margin-bottom: 8px;
+    color: var(--color-success);
+}
+
+.coordinator-name {
+    font-size: 16px;
+    margin-bottom: 0;
+}
+
+.coordinator-role {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.participants-list {
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    padding-left: 0;
+    margin-top: 10px;
+}
+
+.participants-list li {
+    font-size: 14px;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+}
+
+.participants-list li::before {
+    content: "•";
+    color: var(--color-magnus);
+    margin-right: 8px;
+    font-weight: bold;
+}
+
+.credits-image-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 16px;
+    padding: 16px;
+    border: 1px solid var(--border-color);
+}
+
+.credits-poster {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    transition: transform 0.3s ease;
+}
+
+.credits-poster:hover {
+    transform: scale(1.02);
+}
+
+@media (max-width: 900px) {
+    .credits-grid {
+        grid-template-columns: 1fr;
+    }
+    .participants-list {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ==========================================================================
    FOOTER
    ========================================================================== */
 .app-footer {
