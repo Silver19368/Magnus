@@ -98,4 +98,4 @@ Este proyecto es parte de la iniciativa **Ciencia y fútbol** de la **Facultad d
 *   Karen Soriano Hernández
 *   Israel Alejandro Santiago Corona
 
-![Ciencia y Fútbol - SINERGIA MediaLab](assets/cartel.jpg)
+![Ciencia y Fútbol - SINERGIA MediaLab](assets/cartel.png)
