@@ -75,6 +75,21 @@ Dado que es una aplicación basada íntegramente en el cliente, no necesita ning
 
 ---
 
+## 📅 Eventos y Difusión
+
+El simulador **Tirititito 3D** se presentará en la **7ma edición del Zócalo de las Ciencias**:
+
+*   **Fecha**: 26 de junio de 2026
+*   **Horario**: 10:00 a 16:00 h
+*   **Lugar**: Kiosco de la Alameda Central, Ciudad de México
+
+<p align="center">
+  <img src="assets/cartel_zocalo_1.jpg" alt="Ciencia y fútbol - Alameda Central" width="48%" />
+  <img src="assets/cartel_zocalo_2.jpg" alt="7ma Edición - Zócalo de las Ciencias" width="48%" />
+</p>
+
+---
+
 ## 👥 Autores y Créditos
 
 Este proyecto es parte de la iniciativa **Ciencia y fútbol** de la **Facultad de Ciencias, UNAM**.
